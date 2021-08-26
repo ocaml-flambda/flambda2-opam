@@ -9,6 +9,7 @@ homepage: "https://github.com/thierry-martinez/stdcompat"
 bug-reports: "https://github.com/thierry-martinez/stdcompat/issues"
 depends: [
   "ocaml" {>= "3.08"}
+  "conf-autoconf" # additional dep needed because we need to regenerate the configure script
 ]
 depopts: [ "result" "seq" "uchar" "ocamlfind" ]
 build: [
