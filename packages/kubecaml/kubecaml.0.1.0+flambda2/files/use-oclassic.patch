@@ -1,0 +1,12 @@
+diff --git a/src/jbuild b/src/jbuild
+index e884e66..bf0d039 100644
+--- a/src/jbuild
++++ b/src/jbuild
+@@ -13,6 +13,7 @@
+  ((name        kubecaml)
+   (public_name kubecaml)
+   (preprocess  (pps (ppx_deriving ppx_deriving_yojson)))
++  (ocamlopt_flags (:standard -Oclassic))
+   (libraries   (cohttp-lwt-unix
+                 uri
+                 lwt
