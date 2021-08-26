@@ -12,6 +12,10 @@ depends: [
 ]
 depopts: [ "result" "seq" "uchar" "ocamlfind" ]
 build: [
+  # Additional step needed to regenerate the configure since the patch
+  # affects how the configure is generated and an already generated configure
+  # is included in the release tarball
+  [make "-f" "Makefile.bootstrap"]
   ["./configure" "--prefix=%{prefix}%"]
   [make "all" "test" {with-test}]
 ]
