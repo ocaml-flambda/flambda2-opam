@@ -1,4 +1,4 @@
-From 0b2655b93f82857ff6babd0ce0c8f0f7fa3e7c9a Mon Sep 17 00:00:00 2001
+From 9bdb2c3f7fdfe89e3687f5b4372b0bfb3c7ad3da Mon Sep 17 00:00:00 2001
 From: Vincent Laviron <vincent.laviron@gmail.com>
 Date: Fri, 27 Aug 2021 14:45:31 +0200
 Subject: [PATCH] Replace Obj.set_tag with Obj.with_tag
@@ -11,7 +11,7 @@ Subject: [PATCH] Replace Obj.set_tag with Obj.with_tag
  4 files changed, 51 insertions(+), 27 deletions(-)
 
 diff --git a/enumerative.ml b/enumerative.ml
-index 7428c3e..2f18690 100644
+index 7428c3e..69f0dba 100644
 --- a/enumerative.ml
 +++ b/enumerative.ml
 @@ -47,14 +47,38 @@ module SLI = Set.Make (struct
@@ -168,7 +168,7 @@ index 7428c3e..2f18690 100644
 -  (* Prevent the GC from scanning the list env.states as it is going to be
 -     kept in memory all the time. *)
 -  List.iter (fun s -> Obj.set_tag (Obj.repr s) (Obj.no_scan_tag)) env.states
-+let no_scan_states env = env
++let no_scan_states env = ()
  
  let finalize_search env =
    let st = HST.stats env.explicit_states in

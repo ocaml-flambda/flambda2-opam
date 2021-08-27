@@ -28,5 +28,5 @@ url {
   checksum: "md5=706b3405ea9400b6a1b21dec9c2cb02f"
 }
 patches: ["0001-Replace-Obj.set_tag-with-Obj.with_tag.patch"]
-extra-files: [ ["0001-Replace-Obj.set_tag-with-Obj.with_tag.patch" "md5=ea3361a272fe0a9be47e387f31c6272c"]
+extra-files: [ ["0001-Replace-Obj.set_tag-with-Obj.with_tag.patch" "md5=a97a9984a43c39a50a545c502f6c7ad0"]
                ["cubicle.install" "md5=ba6d18615d00544948c96638b6c8d900"] ]
