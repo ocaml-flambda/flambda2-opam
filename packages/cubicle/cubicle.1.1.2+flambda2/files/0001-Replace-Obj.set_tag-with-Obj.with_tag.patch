@@ -1,17 +1,17 @@
-From 599fbf17765247d054a65a03eee23fb1a6bf19ae Mon Sep 17 00:00:00 2001
+From 0b2655b93f82857ff6babd0ce0c8f0f7fa3e7c9a Mon Sep 17 00:00:00 2001
 From: Vincent Laviron <vincent.laviron@gmail.com>
 Date: Fri, 27 Aug 2021 14:45:31 +0200
 Subject: [PATCH] Replace Obj.set_tag with Obj.with_tag
 
 ---
- enumerative.ml  | 60 ++++++++++++++++++++++++++++++++++---------------
- enumerative.mli |  5 ++++-
+ enumerative.ml  | 65 ++++++++++++++++++++++++++++++++-----------------
+ enumerative.mli |  5 +++-
  muparser.mly    |  6 ++---
  murphi.ml       |  2 +-
- 4 files changed, 50 insertions(+), 23 deletions(-)
+ 4 files changed, 51 insertions(+), 27 deletions(-)
 
 diff --git a/enumerative.ml b/enumerative.ml
-index 7428c3e..283a996 100644
+index 7428c3e..2f18690 100644
 --- a/enumerative.ml
 +++ b/enumerative.ml
 @@ -47,14 +47,38 @@ module SLI = Set.Make (struct
@@ -160,7 +160,19 @@ index 7428c3e..283a996 100644
    List.fold_left (apply_action env st) [st'] acts
  
  
-@@ -1197,7 +1221,7 @@ let finalize_search env =
+@@ -1181,10 +1205,7 @@ let shuffle d =
+     let sond = List.sort compare nd in
+     List.rev_map snd sond
+ 
+-let no_scan_states env =
+-  (* Prevent the GC from scanning the list env.states as it is going to be
+-     kept in memory all the time. *)
+-  List.iter (fun s -> Obj.set_tag (Obj.repr s) (Obj.no_scan_tag)) env.states
++let no_scan_states env = env
+ 
+ let finalize_search env =
+   let st = HST.stats env.explicit_states in
+@@ -1197,7 +1218,7 @@ let finalize_search env =
      printf "Buckets          : %d@." st.Hashtbl.num_buckets;
      printf "Max bucket size  : %d@." st.Hashtbl.max_bucket_length;
      printf "Bucket histogram : @?";
@@ -169,7 +181,7 @@ index 7428c3e..283a996 100644
        st.Hashtbl.bucket_histogram;
      printf "@.";
    end;
-@@ -1492,10 +1516,10 @@ let int_of_term env t =
+@@ -1492,10 +1513,10 @@ let int_of_term env t =
  
  let next_id env = env.pinf_int_abstr + 1
  
