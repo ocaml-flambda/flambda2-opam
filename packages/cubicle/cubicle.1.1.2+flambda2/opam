@@ -22,11 +22,11 @@ conflicts: [
   "functory" {< "0.5"}
 ]
 synopsis: "SMT based model checker for parameterized systems"
-extra-files: ["cubicle.install" "md5=ba6d18615d00544948c96638b6c8d900"]
 url {
   src:
     "https://github.com/cubicle-model-checker/cubicle/releases/download/1.1.2/cubicle-1.1.2.tar.gz"
   checksum: "md5=706b3405ea9400b6a1b21dec9c2cb02f"
 }
 patches: ["0001-Replace-Obj.set_tag-with-Obj.with_tag.patch"]
-extra-files: [ ["0001-Replace-Obj.set_tag-with-Obj.with_tag.patch" "md5=ea3361a272fe0a9be47e387f31c6272c"] ]
+extra-files: [ ["0001-Replace-Obj.set_tag-with-Obj.with_tag.patch" "md5=ea3361a272fe0a9be47e387f31c6272c"]
+               ["cubicle.install" "md5=ba6d18615d00544948c96638b6c8d900"] ]
