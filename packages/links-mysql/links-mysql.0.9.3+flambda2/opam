@@ -29,3 +29,5 @@ url {
     "sha512=0f70d72e9d0eac2ddd7fb7905e4a5ea2136cfbffcd83d564026f847f1d90c02daaf70d8c84555c68a076867cf9f0913ae38d6b53ca6faaadbedbf20421aa83d8"
   ]
 }
+patches: ["unix-link.patch"]
+extra-files: [ ["unix-link.patch" "md5=5a11b90b5b1395aadff280eaad55406a"] ]
