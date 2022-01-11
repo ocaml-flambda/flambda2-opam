@@ -45,5 +45,5 @@ extra-source "ocaml-4.12.0.tar.gz" {
   src: "https://github.com/ocaml/ocaml/archive/4.12.0.tar.gz"
 }
 url {
-  src: "git://github.com/ocaml-flambda/flambda-backend.git"
+  src: "git+https://github.com/ocaml-flambda/flambda-backend.git"
 }
