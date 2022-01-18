@@ -1,0 +1,30 @@
+diff --git a/database/mysql-driver/dune b/database/mysql-driver/dune
+index c5a4ed03..ccd9c77a 100644
+--- a/database/mysql-driver/dune
++++ b/database/mysql-driver/dune
+@@ -3,8 +3,8 @@
+   (public_name links-mysql)
+   (synopsis "MySQL database backend for Links")
+   (optional)
+-  (flags (:standard -safe-string -dtypes -w Ae-44-45-60 -g -cclib -lunix -thread))
+-  (libraries mysql links.core))
++  (flags (:standard -safe-string -dtypes -w Ae-44-45-60 -g -thread))
++  (libraries unix mysql links.core))
+ 
+ 
+ (install
+diff --git a/database/mysql8-driver/dune b/database/mysql8-driver/dune
+index adfdb3ad..02c4fe17 100644
+--- a/database/mysql8-driver/dune
++++ b/database/mysql8-driver/dune
+@@ -3,8 +3,8 @@
+   (public_name links-mysql8)
+   (synopsis "MySQL8 database backend for Links")
+   (optional)
+-  (flags (:standard -safe-string -dtypes -w Ae-42-44-45-60 -g -cclib -lunix -thread))
+-  (libraries mysql8 links.core))
++  (flags (:standard -safe-string -dtypes -w Ae-42-44-45-60 -g -thread))
++  (libraries unix mysql8 links.core))
+ 
+ 
+ (install
