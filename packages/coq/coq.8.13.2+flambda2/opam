@@ -52,5 +52,5 @@ extra-files: [
 ]
 
 url {
-  src: "git://github.com/ocaml-flambda/coq.git#flambda2-patches"
+  src: "git+https://github.com/ocaml-flambda/coq.git#flambda2-patches"
 }
