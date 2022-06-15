@@ -15,11 +15,8 @@ depends: [
 conflict-class: "ocaml-core-compiler"
 flags: [ compiler avoid-version ]
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
-build: [
-  ["sh" "-c" "cd \"${TMPDIR:-/tmp}\" && mv \"%{build}%\"/*.tar.gz . && tar xvf special_dune.tar.gz && tar xvf ocaml-4.12.0.tar.gz && cd ocaml-4.12.0 && ./configure \"--prefix=${TMPDIR:-/tmp}/ocaml\" && make -j%{jobs}% && make install && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" %{make}% -C \"${TMPDIR:-/tmp}/dune-special_dune\" release && cp \"${TMPDIR:-/tmp}/dune-special_dune/dune.exe\" \"%{build}%/\" && autoconf && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" ./configure \"--prefix=%{prefix}%\" --enable-middle-end=flambda2 \"--with-dune=%{build}%/dune.exe\" && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" \"%{make}%\" -j%{jobs}%"]
-]
 install: [
-  [make "install"]
+  ["sh" "-c" "cd \"${TMPDIR:-/tmp}\" && mv \"%{build}%\"/*.tar.gz . && tar xvf special_dune.tar.gz && tar xvf ocaml-4.12.0.tar.gz && cd ocaml-4.12.0 && ./configure \"--prefix=${TMPDIR:-/tmp}/ocaml\" && make -j%{jobs}% && make install && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" %{make}% -C \"${TMPDIR:-/tmp}/dune-special_dune\" release && cp \"${TMPDIR:-/tmp}/dune-special_dune/dune.exe\" \"%{build}%/\" && autoconf && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" ./configure \"--prefix=%{prefix}%\" --enable-middle-end=flambda2 \"--with-dune=%{build}%/dune.exe\" && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" \"%{make}%\" -j%{jobs}% && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" \"%{make}%\" install"]
 ]
 conflicts: [
   "ocaml-option-32bit"
