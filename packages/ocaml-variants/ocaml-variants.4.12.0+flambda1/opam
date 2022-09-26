@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Latest 4.12 development"
+maintainer: "platform@lists.ocaml.org"
+authors: ["Xavier Leroy" "Damien Doligez" "Alain Frisch" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git://github.com/ocaml-flambda/flambda-backend.git"
+depends: [
+  "ocaml" {= "4.12.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "conf-autoconf" {build}
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+install: [
+  ["sh" "-c" "cd \"${TMPDIR:-/tmp}\" && mv \"%{build}%\"/*.tar.gz . && tar xvf special_dune.tar.gz && tar xvf ocaml-4.12.0.tar.gz && cd ocaml-4.12.0 && ./configure \"--prefix=${TMPDIR:-/tmp}/ocaml\" && make -j%{jobs}% && make install && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" %{make}% -C \"${TMPDIR:-/tmp}/dune-special_dune\" release && cp \"${TMPDIR:-/tmp}/dune-special_dune/dune.exe\" \"%{build}%/\" && cd \"%{build}%\" && autoconf && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" ./configure \"--prefix=%{prefix}%\" --enable-middle-end=flambda \"--with-dune=%{build}%/dune.exe\" && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" \"%{make}%\" -j%{jobs}% && PATH=\"${TMPDIR:-/tmp}/ocaml/bin:$PATH\" \"%{make}%\" install"]
+]
+conflicts: [
+  "ocaml-option-32bit"
+  "ocaml-option-afl"
+  "ocaml-option-bytecode-only"
+  "ocaml-option-default-unsafe-string"
+  "ocaml-option-no-flat-float-array"
+  "ocaml-option-flambda"
+  "ocaml-option-fp"
+  "ocaml-option-musl"
+  "ocaml-option-static"
+  "ocaml-option-spacetime"
+  "ocaml-option-nnp"
+  "ocaml-option-nnpchecker"
+]
+extra-source "special_dune.tar.gz" {
+  src: "https://github.com/ocaml-flambda/dune/archive/special_dune.tar.gz"
+}
+extra-source "ocaml-4.12.0.tar.gz" {
+  src: "https://github.com/ocaml/ocaml/archive/4.12.0.tar.gz"
+}
+url {
+  src: "git+https://github.com/ocaml-flambda/flambda-backend.git"
+}
