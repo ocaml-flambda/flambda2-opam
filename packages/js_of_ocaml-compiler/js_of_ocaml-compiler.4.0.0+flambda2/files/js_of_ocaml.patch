@@ -1,0 +1,176 @@
+diff --git a/compiler/bin-js_of_ocaml/compile.ml b/compiler/bin-js_of_ocaml/compile.ml
+--- a/compiler/bin-js_of_ocaml/compile.ml
++++ b/compiler/bin-js_of_ocaml/compile.ml
+@@ -26,7 +26,8 @@ let debug_mem = Debug.find "mem"
+ let _ = Sys.catch_break true
+ 
+ let gen_unit_filename dir u =
+-  Filename.concat dir (Printf.sprintf "%s.js" u.Cmo_format.cu_name)
++  let name = u.Cmo_format.cu_name |> Compilation_unit.Name.to_string in
++  Filename.concat dir (Printf.sprintf "%s.js" name)
+ 
+ let run
+     { Cmd_arg.common
+@@ -278,8 +279,9 @@ let run
+             let code =
+               Parse_bytecode.from_cmo ~includes:paths ~toplevel ~debug:need_debug cmo ic
+             in
++            let name = cmo.cu_name |> Compilation_unit.Name.to_string in
+             if times ()
+-            then Format.eprintf "  parsing: %a (%s)@." Timer.print t1 cmo.cu_name;
++            then Format.eprintf "  parsing: %a (%s)@." Timer.print t1 name;
+             output code ~standalone:false output_file)
+     | `Cma cma ->
+         let t1 = Timer.make () in
+diff --git a/compiler/bin-js_of_ocaml/js_of_ocaml.ml b/compiler/bin-js_of_ocaml/js_of_ocaml.ml
+--- a/compiler/bin-js_of_ocaml/js_of_ocaml.ml
++++ b/compiler/bin-js_of_ocaml/js_of_ocaml.ml
+@@ -45,29 +45,30 @@ let _ =
+     | _ -> argv
+   in
+   try
+-    match
+-      Cmdliner.Term.eval_choice
+-        ~catch:false
+-        ~argv
+-        Compile.command_main
+-        [ Link.command
+-        ; Build_fs.command
+-        ; Build_runtime.command
+-        ; Print_runtime.command
+-        ; Check_runtime.command
+-        ; Compile.command
+-        ]
+-    with
+-    | `Ok () | `Help | `Version ->
+-        if !warnings > 0 && !werror
+-        then (
+-          Format.eprintf "%s: all warnings being treated as errors@." Sys.argv.(0);
+-          exit 1)
+-        else exit 0
+-    | `Error `Term -> exit 1
+-    | `Error `Parse -> exit 124
+-    | `Error `Exn -> ()
+-    (* should not happen *)
++    Sys.with_async_exns (fun () ->
++      match
++        Cmdliner.Term.eval_choice
++          ~catch:false
++          ~argv
++          Compile.command_main
++          [ Link.command
++          ; Build_fs.command
++          ; Build_runtime.command
++          ; Print_runtime.command
++          ; Check_runtime.command
++          ; Compile.command
++          ]
++      with
++      | `Ok () | `Help | `Version ->
++          if !warnings > 0 && !werror
++          then (
++            Format.eprintf "%s: all warnings being treated as errors@." Sys.argv.(0);
++            exit 1)
++          else exit 0
++      | `Error `Term -> exit 1
++      | `Error `Parse -> exit 124
++      | `Error `Exn -> ()
++      (* should not happen *))
+   with
+   | (Match_failure _ | Assert_failure _ | Not_found) as exc ->
+       let backtrace = Printexc.get_backtrace () in
+diff --git a/compiler/bin-jsoo_minify/jsoo_minify.ml b/compiler/bin-jsoo_minify/jsoo_minify.ml
+--- a/compiler/bin-jsoo_minify/jsoo_minify.ml
++++ b/compiler/bin-jsoo_minify/jsoo_minify.ml
+@@ -97,10 +97,11 @@ let main = Cmdliner.Term.(pure f $ Cmd_a
+ let _ =
+   Timer.init Sys.time;
+   try
+-    Cmdliner.Term.eval
+-      ~catch:false
+-      ~argv:(Jsoo_cmdline.normalize_argv ~warn:(warn "%s") Sys.argv)
+-      main
++    Sys.with_async_exns (fun () ->
++      Cmdliner.Term.eval
++        ~catch:false
++        ~argv:(Jsoo_cmdline.normalize_argv ~warn:(warn "%s") Sys.argv)
++        main)
+   with
+   | (Match_failure _ | Assert_failure _ | Not_found) as exc ->
+       let backtrace = Printexc.get_backtrace () in
+diff --git a/compiler/lib/generate.ml b/compiler/lib/generate.ml
+--- a/compiler/lib/generate.ml
++++ b/compiler/lib/generate.ml
+@@ -936,7 +936,9 @@ let _ =
+       bool (J.EBin (J.EqEq, cx, cy)));
+   register_bin_prim "caml_js_instanceof" `Pure (fun cx cy _ ->
+       bool (J.EBin (J.InstanceOf, cx, cy)));
+-  register_un_prim "caml_js_typeof" `Pure (fun cx _ -> J.EUn (J.Typeof, cx))
++  register_un_prim "caml_js_typeof" `Pure (fun cx _ -> J.EUn (J.Typeof, cx));
++  register_un_prim "caml_with_async_exns" `Mutator (fun closure loc ->
++      ecall closure [int 0] loc)
+ 
+ (* This is not correct when switching the js-string flag *)
+ (* {[
+diff --git a/compiler/lib/parse_bytecode.ml b/compiler/lib/parse_bytecode.ml
+--- a/compiler/lib/parse_bytecode.ml
++++ b/compiler/lib/parse_bytecode.ml
+@@ -2378,7 +2378,7 @@ let from_exe
+     then
+       Ocaml_compiler.Symtable.GlobalMap.fold
+         (fun id num acc ->
+-          if num > exception_ids && Ident.global id && is_module (Ident.name id)
++          if num > exception_ids && Ident.is_global id && is_module (Ident.name id)
+           then StringSet.add (Ident.name id) acc
+           else acc)
+         symbols
+@@ -2562,7 +2562,7 @@ let from_compilation_units ~includes:_ ~
+     if toplevel && Config.Flag.include_cmis ()
+     then
+       List.fold_left l ~init:StringSet.empty ~f:(fun acc (compunit, _) ->
+-          StringSet.add compunit.Cmo_format.cu_name acc)
++          StringSet.add (compunit.Cmo_format.cu_name |> Compilation_unit.Name.to_string) acc)
+     else StringSet.empty
+   in
+   { code = prepend prog body; cmis; debug = debug_data }
+@@ -2621,7 +2621,7 @@ let from_channel ic =
+           then raise Magic_number.(Bad_magic_version magic);
+           let compunit_pos = input_binary_int ic in
+           seek_in ic compunit_pos;
+-          let compunit : Cmo_format.compilation_unit = input_value ic in
++          let compunit : Cmo_format.compilation_unit_descr = input_value ic in
+           `Cmo compunit
+       | `Cma ->
+           if Config.Flag.check_magic ()
+diff --git a/compiler/lib/parse_bytecode.mli b/compiler/lib/parse_bytecode.mli
+--- a/compiler/lib/parse_bytecode.mli
++++ b/compiler/lib/parse_bytecode.mli
+@@ -59,7 +59,7 @@ val from_cmo :
+      ?includes:string list
+   -> ?toplevel:bool
+   -> ?debug:bool
+-  -> Cmo_format.compilation_unit
++  -> Cmo_format.compilation_unit_descr
+   -> in_channel
+   -> one
+ 
+@@ -73,7 +73,7 @@ val from_cma :
+ 
+ val from_channel :
+      in_channel
+-  -> [ `Cmo of Cmo_format.compilation_unit | `Cma of Cmo_format.library | `Exe ]
++  -> [ `Cmo of Cmo_format.compilation_unit_descr | `Cma of Cmo_format.library | `Exe ]
+ 
+ val from_string : string array -> string -> Code.program * Debug.t
+ 
+diff --git a/toplevel/bin/jsoo_common.ml b/toplevel/bin/jsoo_common.ml
+--- a/toplevel/bin/jsoo_common.ml
++++ b/toplevel/bin/jsoo_common.ml
+@@ -63,6 +63,7 @@ let cmis_of_cma ~dir cma_path =
+   let contains = unit_of_cma cma_path in
+   let dir = Filename.dirname cma_path in
+   List.filter_map contains ~f:(fun s ->
++      let s = s |> Compilation_unit.Name.to_string in
+       try Some (read_cmi ~dir (s ^ ".cmi")) with Not_found -> None)
+ 
+ let cmis_of_package pkg : string list =
