@@ -11,7 +11,7 @@ doc: "https://ocsigen.org/js_of_ocaml/latest/manual/overview"
 bug-reports: "https://github.com/ocsigen/js_of_ocaml/issues"
 depends: [
   "dune" {>= "2.9"}
-  "ocaml-variants" {= "4.12.0+flambda1" | = "4.12.0+flambda2"| = "4.12.0+pr867+flambda2" }
+  "ocaml" {>= "4.04"}
   "js_of_ocaml-compiler" {= version}
   "ppxlib" {>= "0.15"}
   "uchar"
@@ -45,5 +45,5 @@ url {
   ]
 }
 x-commit-hash: "6fb1d008061b6c028c375b240882bb735d54a5bc"
-patches: ["js_of_ocaml.patch"]
+patches: ["js_of_ocaml.patch"] { ?ocaml-variants:flambda-backend & ocaml-variants:flambda-backend }
 extra-files: [ ["js_of_ocaml.patch" "md5=94e0fbbd912a4bb87a5da4d74d5e7535"] ]

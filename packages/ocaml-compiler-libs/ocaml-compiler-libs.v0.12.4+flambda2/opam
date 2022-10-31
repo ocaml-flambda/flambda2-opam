@@ -10,7 +10,7 @@ homepage: "https://github.com/janestreet/ocaml-compiler-libs"
 bug-reports: "https://github.com/janestreet/ocaml-compiler-libs/issues"
 depends: [
   "dune" {>= "2.8"}
-  "ocaml-variants" {= "4.12.0+flambda1" | = "4.12.0+flambda2"| = "4.12.0+pr867+flambda2" }
+  "ocaml" {>= "4.04.1"}
   "odoc" {with-doc}
 ]
 build: [
@@ -37,5 +37,5 @@ url {
   ]
 }
 x-commit-hash: "8cd12f18bb7171c2b67d661868c4271fae528d93"
-patches: ["read_cma.patch"]
+patches: ["read_cma.patch" { ?ocaml-variants:flambda-backend & ocaml-variants:flambda-backend } ]
 extra-files: [ ["read_cma.patch" "md5=2ebb9731c60412575f27f3af2293a2a9"] ]
