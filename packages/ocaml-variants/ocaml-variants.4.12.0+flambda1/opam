@@ -45,3 +45,4 @@ extra-source "alt-signal-stack.patch" {
   src: "https://github.com/ocaml/ocaml/commit/1eeb0e7fe595f5f9e1ea1edbdf785ff3b49feeeb.patch"
   checksum: "sha256=59de25b95409c1927c4b607fb4b1218ff7623fca45474448c8e114a42853e3ad"
 }
+extra-files: [ [ "ocaml-variants.config" "md5=2e903f01e0ca006dd7c6cc7e4ec4543f" ] ]
