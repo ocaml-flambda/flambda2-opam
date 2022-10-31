@@ -11,7 +11,7 @@ doc: "https://ocsigen.org/js_of_ocaml/latest/manual/overview"
 bug-reports: "https://github.com/ocsigen/js_of_ocaml/issues"
 depends: [
   "dune" {>= "2.9"}
-  "ocaml" {>= "4.04"}
+  "ocaml-variants" {= "4.12.0+flambda1" | = "4.12.0+flambda2"| = "4.12.0+pr867+flambda2" }
   "js_of_ocaml-compiler" {= version}
   "ppxlib" {>= "0.15"}
   "uchar"
