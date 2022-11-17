@@ -10,6 +10,7 @@ depends: [
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
+  "base-flambda2" {post}
   "conf-autoconf" {build}
 ]
 conflict-class: "ocaml-core-compiler"
