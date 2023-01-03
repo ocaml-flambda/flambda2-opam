@@ -1,0 +1,12 @@
+diff --git a/src/genlifter.ml b/src/genlifter.ml
+index 14c060c..fcff1cc 100644
+--- a/src/genlifter.ml
++++ b/src/genlifter.ml
+@@ -117,6 +117,7 @@ module Main : sig end = struct
+             let qc = prefix ^ c in
+             match cd.cd_args with
+             | Cstr_tuple (tys) ->
++                let tys = List.map fst tys in
+                 let p, args = gentuple env tys in
+                 pconstr qc p, selfcall "constr" [str ty; tuple[str c; list args]]
+             | Cstr_record (l) ->
