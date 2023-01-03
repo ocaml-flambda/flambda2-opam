@@ -2,8 +2,8 @@ opam-version: "2.0"
 synopsis: "A meta-package showing that the compiler is flambda2 compatible"
 maintainer: "https://github.com/ocaml-flambda/flambda2-opam/issues"
 depends: [
-  "ocaml-variants" { = "4.14.0+flambda1" |
-                     = "4.14.0+pr968+flambda2" |
-                     = "4.14.0+flambda2" }
+  "ocaml-variants" { = "4.14.1+flambda1" |
+                     = "4.14.1+pr968+flambda2" |
+                     = "4.14.1+flambda2" }
 ]
 
