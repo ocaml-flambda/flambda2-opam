@@ -28,17 +28,16 @@ index 12a2201..2f78414 100644
  
  src/%.cmx: src/%.ml
 diff --git a/src/configuration.ml b/src/configuration.ml
-index a209df5..f7120da 100644
+index a209df5..ec620d0 100644
 --- a/src/configuration.ml
 +++ b/src/configuration.ml
-@@ -58,6 +58,15 @@ let apply_config s (config : t) init =
+@@ -58,6 +58,14 @@ let apply_config s (config : t) init =
    List.fold_left begin fun tags (key, v) ->
      if key_match key s then
        List.fold_right add v.plus_tags (List.fold_right remove v.minus_tags tags)
 +    else if
-+         String.length s >= 4
-+      && List.mem (String.sub s (String.length s - 4) 4) [".cmi"; ".cmo"]
-+      && key_match key (String.sub s 0 (String.length s - 4) ^ ".cmx")
++         List.mem (Filename.extension s) [".ml"; ".mli"]
++      && key_match key (Filename.remove_extension s ^ ".cmx")
 +    then
 +      let only_for_pack l =
 +        List.filter (fun (tag, _) -> String.length tag >= 9 && String.sub tag 0 9 = "for-pack(") l

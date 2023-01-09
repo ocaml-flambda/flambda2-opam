@@ -40,4 +40,4 @@ url {
   ]
 }
 patches: ["flambda2.patch"]
-extra-files: [ ["flambda2.patch" "md5=c17a3cfde2f575cfb4e80ef4a430a4f6"] ]
+extra-files: [ ["flambda2.patch" "md5=6d7a7f2dd8d51e784004cf132c626f70"] ]
