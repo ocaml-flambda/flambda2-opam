@@ -7,5 +7,5 @@ diff --git a/src/read_cma/read_cma.ml b/src/read_cma/read_cma.ml
  
 -  List.map toc.lib_units ~f:(fun cu -> cu.Cmo_format.cu_name)
 +  List.map toc.lib_units
-+    ~f:(fun cu -> cu.Cmo_format.cu_name |> Compilation_unit.Name.to_string)
++    ~f:(fun cu -> cu.Cmo_format.cu_name |> Compilation_unit.name |> Compilation_unit.Name.to_string)
    |> List.sort ~cmp:String.compare
